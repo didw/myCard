@@ -61,7 +61,14 @@ def test_load_bet_list():
 def load_dict(fname):
   return pickle.load(open(fname, 'rb'))
 
-def similar_prev(prev_cand, prev_value, cand, value):
+def similar_prev_mid(prev_cand, prev_value, cand, value):
+  if prev_value != value:
+    return False
+  if prev_cand[0] != cand[0] or prev_cand[2] != cand[2]:
+    return False
+  return True
+
+def similar_prev_last(prev_cand, prev_value, cand, value):
   if prev_value != value:
     return False
   if prev_cand[0] != cand[0] or prev_cand[1] != cand[1]:
@@ -91,8 +98,10 @@ def betting(my_card, res_dict):
       for cand, value in sorted(rc_dict.items()):
         print(cand, value)
         # if similar with previous bet just click last cand
-        if similar_prev(prev_cand, prev_value, cand, value):
-          my_card.click_hrno(2, cand[2])
+        if similar_prev_mid(prev_cand, prev_value, cand, value):
+          my_card.click_hrno(3, cand[1])
+        elif similar_prev_last(prev_cand, prev_value, cand, value):
+          my_card.click_hrno(4, cand[2])
         else:
           if head > 3:
             head = 1
