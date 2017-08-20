@@ -61,12 +61,20 @@ def test_load_bet_list():
 def load_dict(fname):
   return pickle.load(open(fname, 'rb'))
 
+def similar_prev(prev_cand, prev_value, cand, value):
+  if prev_value != value:
+    return False
+  if prev_cand[0] != cand[0] or prev_cand[1] != cand[1]:
+    return False
+  return True
 
 def betting(my_card, res_dict):
   # Bet sat first
   first = True
   for Day in ['Sat', 'Sun']:
+    print("=== SAT ===")
     for rcno in range(1, 16):
+      print("=== rcno: %d ===" % rcno)
       rc_dict = res_dict[Day][rcno]
       length_dict = len(rc_dict)
       if length_dict == 0:
@@ -78,15 +86,25 @@ def betting(my_card, res_dict):
         my_card.click_confirm()
       time.sleep(2)
       head = 1
-      for cand, value in rc_dict.items():
-        #value = rc_dict[cand]
-        my_card.click_head(head)
-        my_card.click_ss()
-        for j in range(3):
-          my_card.click_hrno(j, cand[j])
-        my_card.click_bet_total(value/100)
-        length_dict -= 1
-        head += 1
+      prev_cand = (0, 0, 0)
+      prev_value = 0
+      for cand, value in sorted(rc_dict.items()):
+        print(cand, value)
+        # if similar with previous bet just click last cand
+        if similar_prev(prev_cand, prev_value, cand, value):
+          my_card.click_hrno(2, cand[2])
+          length_dict -= 1
+        else:
+          my_card.click_head(head)
+          my_card.click_ss()
+          for j in range(3):
+            my_card.click_hrno(j, cand[j])
+          my_card.click_bet_total(value/100)
+          length_dict -= 1
+          head += 1
+        prev_cand = cand
+        prev_value = value
+        # if fully betted go next
         if length_dict == 0 or head > 3:
           head = 1
           my_card.click_buy()
@@ -107,7 +125,11 @@ def main(fname):
   dlg = app.Yangs6
   my_card = MyCard(dlg)
   res_dict = load_dict(fname)
+  from pywinauto.timings import TimeConfig
+  time_config = TimeConfig()
+  time_config.Fast()
   betting(my_card, res_dict)
+
 
 if __name__ == '__main__':
   fname = 'result/1708/19.pkl'
