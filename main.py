@@ -93,26 +93,28 @@ def betting(my_card, res_dict):
         # if similar with previous bet just click last cand
         if similar_prev(prev_cand, prev_value, cand, value):
           my_card.click_hrno(2, cand[2])
-          length_dict -= 1
         else:
+          if head > 3:
+            head = 1
+            my_card.click_buy()
+            time.sleep(3)
+            my_card.click_go_next(0)
+            time.sleep(3)
           my_card.click_head(head)
           my_card.click_ss()
           for j in range(3):
             my_card.click_hrno(j, cand[j])
           my_card.click_bet_total(value/100)
-          length_dict -= 1
           head += 1
         prev_cand = cand
         prev_value = value
         # if fully betted go next
-        if length_dict == 0 or head > 3:
+        length_dict -= 1
+        if length_dict == 0:
           head = 1
           my_card.click_buy()
           time.sleep(3)
-          if length_dict != 0:
-            my_card.click_go_next(0)
-          else:
-            my_card.click_go_next(1)
+          my_card.click_go_next(1)
           time.sleep(3)
           first = False
           if length_dict == 0:
