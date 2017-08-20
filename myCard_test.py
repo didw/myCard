@@ -3,7 +3,7 @@
 from myCard import *
 
 
-class TestMyCard(myCard):
+class TestMyCard(MyCard):
     def __init__(self, app):
         super(TestMyCard, self).__init__(app)
 

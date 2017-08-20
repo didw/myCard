@@ -5,6 +5,7 @@ import time
 from myCard import *
 
 coords_day = {"Sat": (260, 490), "Sun": (400, 490)}
+coords_head = {1: (155, 255), 2: (260, 255), 3: (370, 255)}
 coords_rcno = { 1: (90, 620),  2: (200, 620),  3: (315, 620),  4: (425, 620)
              ,  5: (90, 685),  6: (200, 685),  7: (315, 685),  8: (425, 685)
              ,  9: (90, 745), 10: (200, 745), 11: (315, 745), 12: (425, 745)
@@ -35,7 +36,7 @@ coords_bet = [{   1:  (60, 785),    2: (128, 785),    3: (196, 785)
 amount_list = [1, 2, 3, 5, 10, 20, 30, 40, 50, 100, 200, 300, 500, 1000]
 amount_list.reverse()
 
-class myCard():
+class MyCard():
     def __init__(self, app):
         self.app = app
         self.first_rc = 1
@@ -55,6 +56,9 @@ class myCard():
 
     def click_confirm(self):
         self.app.ClickInput(coords=(400, 570))
+
+    def click_head(self, idx):
+        self.app.ClickInput(coords=coords_head[idx])
 
     def click_ss(self):
         self.app.ClickInput(coords=(465, 344))
@@ -92,7 +96,7 @@ class myCard():
             self.first_rc = 0
 
 
-class TestMyCard(myCard):
+class TestMyCard(MyCard):
     def __init__(self, app):
         super(TestMyCard, self).__init__(app)
 
