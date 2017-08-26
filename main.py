@@ -3,7 +3,6 @@
 from myCard import *
 import json
 import pickle
-import numpy as np
 
 
 def verify_bet_list(bet_list):
@@ -62,6 +61,9 @@ def test_load_bet_list():
 def load_dict(fname):
   return pickle.load(open(fname, 'rb'))
 
+def save_dict(data, fname):
+  return pickle.dump(data, open(fname, 'wb'))
+
 def similar_prev_mid(prev_cand, prev_value, cand, value):
   if prev_value != value:
     return False
@@ -76,7 +78,7 @@ def similar_prev_last(prev_cand, prev_value, cand, value):
     return False
   return True
 
-def betting(my_card, res_dict, is_done):
+def betting(my_card, res_dict, is_done, f_done):
   # Bet sat first
   first = True
   for Day in ['Sat', 'Sun']:
@@ -128,6 +130,7 @@ def betting(my_card, res_dict, is_done):
           head += 1
           i_b += 1
           is_done[Dat][rcno][i_b] = 1
+          save_dict(is_done, f_done)
         prev_cand = cand
         prev_value = value
         # if fully betted go next
@@ -142,7 +145,9 @@ def betting(my_card, res_dict, is_done):
           if length_dict == 0:
             break
       is_done[Dat][rcno][-1] = 1
+      save_dict(is_done, f_done)
     is_done[Dat] = 1
+    save_dict(is_done, f_done)
 
 
 def main(fname):
@@ -155,7 +160,10 @@ def main(fname):
   time_config = TimeConfig()
   time_config.Fast()
   is_done = {'Sat':{}, 'Sun':{}}
-  betting(my_card, res_dict, is_done)
+  f_done = fname.replace('.pkl', '_done.pkl')
+  if os.path.exists(f_done):
+    is_done = load_dict(f_done)
+  betting(my_card, res_dict, is_done, f_done)
 
 
 if __name__ == '__main__':
