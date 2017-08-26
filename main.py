@@ -110,7 +110,7 @@ def betting(my_card, res_dict, is_done, f_done):
       prev_cand = (0, 0, 0)
       prev_value = 0
       i_b = 0
-      for cand, value in sorted(rc_dict.items()):
+      for cand, value in sorted(rc_dict.items(), key=itemgetter(1, 0), reverse=True):
         ## Missing Horse
         if rcno == 4 and 11 in cand:
           print("[%d] %s:%d[%d] is missing. pass.." % (i_b, Day, rcno, i_b))
@@ -195,13 +195,13 @@ def main(fname):
     is_done = load_dict(f_done)
   # Personal setting..
   my_card.first_rc = 0
-  for i in range(1, 6):
+  for i in range(1, 7):
     is_done['Sun'][i] = [1]*500
-  is_done['Sun'][6] = [0]*500
-  for i in range(216):
-    is_done['Sun'][6][i] = 1
-  for i in range(216, 500):
-    is_done['Sun'][6][i] = 0
+  is_done['Sun'][7] = [0]*500
+  for i in range(0):
+    is_done['Sun'][7][i] = 1
+  for i in range(0, 500):
+    is_done['Sun'][7][i] = 0
 
   betting(my_card, res_dict, is_done, f_done)
 
