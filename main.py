@@ -3,6 +3,7 @@
 from myCard import *
 import json
 import pickle
+import numpy as np
 
 
 def verify_bet_list(bet_list):
@@ -75,13 +76,18 @@ def similar_prev_last(prev_cand, prev_value, cand, value):
     return False
   return True
 
-def betting(my_card, res_dict):
+def betting(my_card, res_dict, is_done):
   # Bet sat first
   first = True
   for Day in ['Sat', 'Sun']:
     print("=== SAT ===")
     for rcno in range(1, 16):
+      if rcno in is_done[Day] and is_done[Day][rcno][-1] == 1:
+        print("%s: %d is bet already. pass.." % (Dat, rcno))
+        continue
       print("=== rcno: %d ===" % rcno)
+      if rcno not in is_done[Day]:
+        is_done[Day][rcno] = [0]*500
       rc_dict = res_dict[Day][rcno]
       length_dict = len(rc_dict)
       if length_dict == 0:
@@ -95,7 +101,12 @@ def betting(my_card, res_dict):
       head = 1
       prev_cand = (0, 0, 0)
       prev_value = 0
+      i_b = 0
       for cand, value in sorted(rc_dict.items()):
+        if is_done[Dat][rcno][i_b] == 1:
+          print("%s:%d[%d] is bet already. pass.." % (Dat, rcno, i_b))
+          i_b += 1
+          continue
         print(cand, value)
         # if similar with previous bet just click last cand
         if similar_prev_mid(prev_cand, prev_value, cand, value):
@@ -115,6 +126,8 @@ def betting(my_card, res_dict):
             my_card.click_hrno(j, cand[j])
           my_card.click_bet_total(value/100)
           head += 1
+          i_b += 1
+          is_done[Dat][rcno][i_b] = 1
         prev_cand = cand
         prev_value = value
         # if fully betted go next
@@ -128,6 +141,8 @@ def betting(my_card, res_dict):
           first = False
           if length_dict == 0:
             break
+      is_done[Dat][rcno][-1] = 1
+    is_done[Dat] = 1
 
 
 def main(fname):
@@ -139,7 +154,8 @@ def main(fname):
   from pywinauto.timings import TimeConfig
   time_config = TimeConfig()
   time_config.Fast()
-  betting(my_card, res_dict)
+  is_done = {'Sat':{}, 'Sun':{}}
+  betting(my_card, res_dict, is_done)
 
 
 if __name__ == '__main__':
