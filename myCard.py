@@ -63,7 +63,7 @@ class MyCard():
         self.app.ClickInput(coords=(380, 900))
 
     def click_confirm(self):
-        self.app.ClickInput(coords=(400, 570))
+        self.app.ClickInput(coords=(410, 565))
 
     def click_head(self, idx):
         self.app.ClickInput(coords=coords_head[idx])
@@ -86,11 +86,17 @@ class MyCard():
                     self.line_overflow = 1
                 if amount == 0:
                     break
+        self.line_overflow = 0
 
-    def click_buy(self):
+    def click_buy(self, n_bet):
         self.app.ClickInput(coords=(400, 920))  # 바로구매
         self.app.ClickInput(coords=(400, 610))  # 예매 알림 확인
-        self.app.ClickInput(coords=(395, 680))  # 즉시구매
+        if n_bet == 1:
+          self.app.ClickInput(coords=(395, 670))  # 즉시구매
+        elif n_bet == 2:
+          self.app.ClickInput(coords=(395, 760))  # 즉시구매
+        else:
+          self.app.ClickInput(coords=(395, 850))  # 즉시구매
         self.initialize()
 
     def click_go_next(self, next):
