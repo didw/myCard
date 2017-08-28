@@ -4,6 +4,7 @@ from myCard import *
 import json
 import pickle
 import os
+from operator import itemgetter
 
 
 def verify_bet_list(bet_list):
@@ -195,13 +196,13 @@ def main(fname):
     is_done = load_dict(f_done)
   # Personal setting..
   my_card.first_rc = 0
-  for i in range(1, 7):
+  for i in range(1, 11):
     is_done['Sun'][i] = [1]*500
-  is_done['Sun'][7] = [0]*500
-  for i in range(0):
-    is_done['Sun'][7][i] = 1
-  for i in range(0, 500):
-    is_done['Sun'][7][i] = 0
+  is_done['Sun'][11] = [0]*500
+  for i in range(42):
+    is_done['Sun'][11][i] = 1
+  for i in range(42, 500):
+    is_done['Sun'][11][i] = 0
 
   betting(my_card, res_dict, is_done, f_done)
 
